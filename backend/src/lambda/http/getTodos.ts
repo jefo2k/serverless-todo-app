@@ -2,7 +2,7 @@ import 'source-map-support/register'
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 import { createLogger } from '../../utils/logger';
-import { getAllTodos } from '../../usecases/todos.usecases'
+import { getTodos } from '../../usecases/todos.usecases'
 
 const logger = createLogger('getTodos')
 
@@ -11,7 +11,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     event,
     key: 'getTodos'
   })
-  const todos = await getAllTodos()
+  const todos = await getTodos()
 
   return {
     statusCode: 200,

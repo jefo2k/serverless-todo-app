@@ -1,38 +1,48 @@
-import { TodoItem } from "../models/TodoItem";
+import * as AWS  from 'aws-sdk'
+import { DocumentClient } from 'aws-sdk/clients/dynamodb'
+import { createLogger } from '../utils/logger'
+import { TodoItem } from "../models/TodoItem"
+
+const logger = createLogger('getTodos')
 
 export class TodoRepository {
 
   constructor(
-    private readonly todoItems = [
-      {
-        "todoId": "123",
-        "createdAt": "2019-07-27T20:01:45.424Z",
-        "name": "Buy milk",
-        "dueDate": "2019-07-29T20:01:45.424Z",
-        "done": false,
-        "attachmentUrl": "http://example.com/image.png"
-      },
-      {
-        "todoId": "456",
-        "createdAt": "2019-07-27T20:01:45.424Z",
-        "name": "Send a letter",
-        "dueDate": "2019-07-29T20:01:45.424Z",
-        "done": true,
-        "attachmentUrl": "http://example.com/image.png"
-      },
-      {
-        "todoId": "789",
-        "createdAt": "2021-04-09T20:01:45.424Z",
-        "name": "Finish the udacity assignment",
-        "dueDate": "2021-04-11T23:59:59.424Z",
-        "done": true,
-        "attachmentUrl": "http://example.com/image.png"
-      }
-    ] as TodoItem[]
+    private readonly docClient: DocumentClient = createDynamoDBClient(),
+    private readonly todosTable = process.env.TODOS_TABLE,
+    private readonly todosIndex = process.env.TODOS_INDEX_NAME
   ) {}
 
-  async getAllTodos(): Promise<TodoItem[]> {
-    return Promise.resolve(this.todoItems)
+  async getTodos(): Promise<TodoItem[]> {
+    const userId = "2346"
+
+    logger.info('Getting persisted todos from user', {
+      userId: userId
+    })
+
+    const result = await this.docClient.query({
+      TableName: this.todosTable,
+      IndexName: this.todosIndex,
+      KeyConditionExpression: 'userId = :userId',
+      ExpressionAttributeValues: {
+        ':userId': userId
+      }
+    }).promise()
+
+    const items = result.Items
+    return items as TodoItem[]
   }
 
+}
+
+function createDynamoDBClient() {
+  if (process.env.IS_OFFLINE) {
+    console.log('Creating a local DynamoDB instance')
+    return new AWS.DynamoDB.DocumentClient({
+      region: 'localhost',
+      endpoint: 'http://localhost:8000'
+    })
+  }
+
+  return new AWS.DynamoDB.DocumentClient()
 }
