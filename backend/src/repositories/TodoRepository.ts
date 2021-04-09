@@ -45,6 +45,35 @@ export class TodoRepository {
 
     return todoItem
   }
+
+  async updateTodo(userId: string, todoId: string, todoName: string, todoDueDate: string, todoDone: boolean): Promise<TodoItem> {
+    logger.info('Updating todo', {
+      todoId
+    })
+
+    const params = {
+      TableName: this.todosTable,
+      Key: {
+        userId: userId,
+        todoId: todoId
+      },
+      ExpressionAttributeNames: {
+        '#todoName': 'name',
+      },
+      ExpressionAttributeValues: {
+        ':name': todoName,
+        ':dueDate': todoDueDate,
+        ':done': todoDone
+      },
+      UpdateExpression: 'SET #todoName = :name, dueDate = :dueDate, done = :done',
+      ReturnValues: 'ALL_NEW'
+    }
+
+    const result = await this.docClient.update(params).promise()
+
+    return result.Attributes as TodoItem;
+  }
+
 }
 
 function createDynamoDBClient() {
