@@ -2,14 +2,13 @@ import 'source-map-support/register'
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 import { createLogger } from '../../utils/logger';
-import { getTodos } from '../../usecases/todos.usecases'
+import { getTodos } from '../../usecases/todosUsecases'
 
 const logger = createLogger('getTodos')
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   logger.info('Processing event', {
-    event,
-    key: 'getTodos'
+    event
   })
   const todos = await getTodos()
 

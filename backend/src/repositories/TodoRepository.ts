@@ -14,7 +14,7 @@ export class TodoRepository {
   ) {}
 
   async getTodos(): Promise<TodoItem[]> {
-    const userId = "2346"
+    const userId = "123456"
 
     logger.info('Getting persisted todos from user', {
       userId: userId
@@ -33,6 +33,18 @@ export class TodoRepository {
     return items as TodoItem[]
   }
 
+  async createTodo(todoItem: TodoItem): Promise<TodoItem> {
+    logger.info('Persisting new todo', {
+      todoId: todoItem.todoId
+    })
+
+    await this.docClient.put({
+      TableName: this.todosTable,
+      Item: todoItem
+    }).promise()
+
+    return todoItem
+  }
 }
 
 function createDynamoDBClient() {
