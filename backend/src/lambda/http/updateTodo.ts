@@ -1,8 +1,8 @@
 import 'source-map-support/register'
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'
-import { createLogger } from '../../utils/logger';
 import { UpdateTodoRequest } from '../../requests/UpdateTodoRequest'
-import { updateTodo } from '../../usecases/todosUsecases';
+import { updateTodo } from '../../usecases/todosUsecases'
+import { createLogger } from '../../utils/logger'
 
 const logger = createLogger('updateTodo')
 
@@ -10,10 +10,11 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   logger.info('Processing event', {
     event
   })
+  const userId = "123456" // TODO get from authenticated user
   const todoId = event.pathParameters.todoId
   const updatedTodo: UpdateTodoRequest = JSON.parse(event.body)
 
-  await updateTodo(todoId, updatedTodo)
+  await updateTodo(userId, todoId, updatedTodo)
 
   return {
     statusCode: 204,
@@ -21,6 +22,6 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
       'Access-Control-Allow-Origin' : '*',
       'Access-Control-Allow-Credentials': true
     },
-    body: ""
+    body: ''
   }
 }
