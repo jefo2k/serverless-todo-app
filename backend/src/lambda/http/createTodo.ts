@@ -8,9 +8,8 @@ import { parseJwtToken, parseUserId } from '../../auth/utils'
 const logger = createLogger('createTodo')
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  logger.info('Processing event', {
-    event
-  })
+  logger.info('Processing event', { event })
+
   const authHeader = event.headers.Authorization
   const jwtToken = parseJwtToken(authHeader)
   const userId = parseUserId(jwtToken)

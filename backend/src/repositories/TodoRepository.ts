@@ -3,7 +3,7 @@ import { DocumentClient } from 'aws-sdk/clients/dynamodb'
 import { createLogger } from '../utils/logger'
 import { TodoItem } from "../models/TodoItem"
 
-const logger = createLogger('getTodos')
+const logger = createLogger('Todo Repository')
 
 export class TodoRepository {
 
@@ -30,9 +30,7 @@ export class TodoRepository {
   }
 
   async createTodo(todoItem: TodoItem): Promise<TodoItem> {
-    logger.info('Persisting new todo', {
-      todoId: todoItem.todoId
-    })
+    logger.info('Persisting new todo', { todoId: todoItem.todoId })
 
     await this.docClient.put({
       TableName: this.todosTable,
@@ -43,9 +41,7 @@ export class TodoRepository {
   }
 
   async updateTodo(userId: string, todoId: string, todoName: string, todoDueDate: string, todoDone: boolean): Promise<TodoItem> {
-    logger.info('Updating todo', {
-      todoId
-    })
+    logger.info('Updating todo', { todoId })
 
     const params = {
       TableName: this.todosTable,
@@ -71,10 +67,7 @@ export class TodoRepository {
   }
 
   async deleteTodo(userId: string, todoId: string) {
-    logger.info('Deteting todo', {
-      userId,
-      todoId
-    })
+    logger.info('Deteting todo', { userId, todoId })
 
     await this.docClient.delete({
       TableName: this.todosTable,
