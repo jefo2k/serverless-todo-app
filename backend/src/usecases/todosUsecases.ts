@@ -4,7 +4,7 @@ import { TodoRepository } from '../repositories/TodoRepository'
 import * as uuid from 'uuid'
 import { CreateTodoRequest } from '../requests/CreateTodoRequest'
 import { UpdateTodoRequest } from '../requests/UpdateTodoRequest';
-import { getUserId } from '../lambda/utils';
+// import { getUserId } from '../lambda/utils';
 
 const todoRepository = new TodoRepository()
 
