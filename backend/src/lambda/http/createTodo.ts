@@ -3,6 +3,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } f
 import { createLogger } from '../../utils/logger'
 import { CreateTodoRequest } from '../../requests/CreateTodoRequest'
 import { createTodo } from '../../usecases/todosUsecases'
+import { parseJwtToken, parseUserId } from '../../auth/utils'
 
 const logger = createLogger('createTodo')
 
@@ -10,8 +11,10 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   logger.info('Processing event', {
     event
   })
+  const authHeader = event.headers.Authorization
+  const jwtToken = parseJwtToken(authHeader)
+  const userId = parseUserId(jwtToken)
   const newTodo: CreateTodoRequest = JSON.parse(event.body)
-  const userId = "123456" // TODO get from authenticated user
 
   const newItem = await createTodo(newTodo, userId)
 
@@ -21,6 +24,8 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
       'Access-Control-Allow-Origin' : '*',
       'Access-Control-Allow-Credentials': true
     },
-    body: JSON.stringify(newItem)
+    body: JSON.stringify({
+      item: newItem
+    })
   }
 }
