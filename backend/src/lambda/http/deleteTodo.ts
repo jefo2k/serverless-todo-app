@@ -2,6 +2,7 @@ import 'source-map-support/register'
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 import { deleteTodo } from '../../usecases/todosUsecases'
 import { createLogger } from '../../utils/logger'
+import { parseJwtToken, parseUserId } from '../../auth/utils'
 
 const logger = createLogger('deleteTodo')
 
@@ -9,7 +10,9 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   logger.info('Processing event', {
     event
   })
-  const userId = "123456" // TODO get from authenticated user
+  const authHeader = event.headers.Authorization
+  const jwtToken = parseJwtToken(authHeader)
+  const userId = parseUserId(jwtToken)
   const todoId = event.pathParameters.todoId
 
   await deleteTodo(userId, todoId)

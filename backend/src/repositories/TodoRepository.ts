@@ -3,7 +3,7 @@ import { DocumentClient } from 'aws-sdk/clients/dynamodb'
 import { createLogger } from '../utils/logger'
 import { TodoItem } from "../models/TodoItem"
 
-const logger = createLogger('getTodos')
+const logger = createLogger('Todo Repository')
 
 export class TodoRepository {
 
@@ -13,12 +13,8 @@ export class TodoRepository {
     private readonly todosIndex = process.env.TODOS_INDEX_NAME
   ) {}
 
-  async getTodos(): Promise<TodoItem[]> {
-    const userId = "123456"
-
-    logger.info('Getting persisted todos from user', {
-      userId
-    })
+  async getTodos(userId: string): Promise<TodoItem[]> {
+    logger.info('Getting persisted todos from user', { userId })
 
     const result = await this.docClient.query({
       TableName: this.todosTable,
@@ -34,9 +30,7 @@ export class TodoRepository {
   }
 
   async createTodo(todoItem: TodoItem): Promise<TodoItem> {
-    logger.info('Persisting new todo', {
-      todoId: todoItem.todoId
-    })
+    logger.info('Persisting new todo', { todoId: todoItem.todoId })
 
     await this.docClient.put({
       TableName: this.todosTable,
@@ -47,9 +41,7 @@ export class TodoRepository {
   }
 
   async updateTodo(userId: string, todoId: string, todoName: string, todoDueDate: string, todoDone: boolean): Promise<TodoItem> {
-    logger.info('Updating todo', {
-      todoId
-    })
+    logger.info('Updating todo', { todoId })
 
     const params = {
       TableName: this.todosTable,
@@ -71,14 +63,11 @@ export class TodoRepository {
 
     const result = await this.docClient.update(params).promise()
 
-    return result.Attributes as TodoItem;
+    return result.Attributes as TodoItem
   }
 
   async deleteTodo(userId: string, todoId: string) {
-    logger.info('Deteting todo', {
-      userId,
-      todoId
-    })
+    logger.info('Deteting todo', { userId, todoId })
 
     await this.docClient.delete({
       TableName: this.todosTable,
