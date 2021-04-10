@@ -11,8 +11,9 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     event
   })
   const newTodo: CreateTodoRequest = JSON.parse(event.body)
+  const userId = "123456" // TODO get from authenticated user
 
-  const newItem = await createTodo(newTodo)
+  const newItem = await createTodo(newTodo, userId)
 
   return {
     statusCode: 201,
