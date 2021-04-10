@@ -35,3 +35,7 @@ export async function updateTodo(todoId: string, updateTodoRequest: UpdateTodoRe
     updateTodoRequest.done
   )
 }
+
+export async function deleteTodo(userId: string, todoId: string) {
+  return await todoRepository.deleteTodo(userId, todoId)
+}

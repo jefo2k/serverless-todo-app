@@ -1,8 +1,8 @@
 import 'source-map-support/register'
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'
-import { createLogger } from '../../utils/logger';
 import { UpdateTodoRequest } from '../../requests/UpdateTodoRequest'
-import { updateTodo } from '../../usecases/todosUsecases';
+import { updateTodo } from '../../usecases/todosUsecases'
+import { createLogger } from '../../utils/logger'
 
 const logger = createLogger('updateTodo')
 
@@ -21,6 +21,6 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
       'Access-Control-Allow-Origin' : '*',
       'Access-Control-Allow-Credentials': true
     },
-    body: ""
+    body: ''
   }
 }

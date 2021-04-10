@@ -17,7 +17,7 @@ export class TodoRepository {
     const userId = "123456"
 
     logger.info('Getting persisted todos from user', {
-      userId: userId
+      userId
     })
 
     const result = await this.docClient.query({
@@ -54,8 +54,8 @@ export class TodoRepository {
     const params = {
       TableName: this.todosTable,
       Key: {
-        userId: userId,
-        todoId: todoId
+        userId,
+        todoId
       },
       ExpressionAttributeNames: {
         '#todoName': 'name',
@@ -72,6 +72,21 @@ export class TodoRepository {
     const result = await this.docClient.update(params).promise()
 
     return result.Attributes as TodoItem;
+  }
+
+  async deleteTodo(userId: string, todoId: string) {
+    logger.info('Deteting todo', {
+      userId,
+      todoId
+    })
+
+    await this.docClient.delete({
+      TableName: this.todosTable,
+      Key: {
+        userId,
+        todoId
+      }
+    }).promise()
   }
 
 }
