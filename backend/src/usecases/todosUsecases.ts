@@ -19,9 +19,10 @@ export async function createTodo(createTodoRequest: CreateTodoRequest, userId: s
     todoId,
     userId,
     name: createTodoRequest.name,
-    createdAt: new Date().toISOString(),
     dueDate: createTodoRequest.dueDate,
-    done: false
+    done: createTodoRequest.done || false,
+    createdAt: createTodoRequest.createdAt || new Date().toISOString(),
+    attachmentUrl: createTodoRequest.attachmentUrl || ''
   })
 }
 
