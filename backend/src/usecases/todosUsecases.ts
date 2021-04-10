@@ -3,13 +3,13 @@ import { TodoRepository } from '../repositories/TodoRepository'
 
 import * as uuid from 'uuid'
 import { CreateTodoRequest } from '../requests/CreateTodoRequest'
-import { UpdateTodoRequest } from '../requests/UpdateTodoRequest';
-// import { getUserId } from '../lambda/utils';
+import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
+// import { getUserId } from '../lambda/utils'
 
 const todoRepository = new TodoRepository()
 
-export async function getTodos(): Promise<TodoItem[]> {
-  return await todoRepository.getTodos()
+export async function getTodos(userId: string): Promise<TodoItem[]> {
+  return await todoRepository.getTodos(userId)
 }
 
 export async function createTodo(createTodoRequest: CreateTodoRequest, userId: string): Promise<TodoItem> {

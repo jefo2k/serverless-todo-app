@@ -1,8 +1,8 @@
 import 'source-map-support/register'
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'
-import { createLogger } from '../../utils/logger';
+import { createLogger } from '../../utils/logger'
 import { CreateTodoRequest } from '../../requests/CreateTodoRequest'
-import { createTodo } from '../../usecases/todosUsecases';
+import { createTodo } from '../../usecases/todosUsecases'
 
 const logger = createLogger('createTodo')
 

@@ -13,12 +13,8 @@ export class TodoRepository {
     private readonly todosIndex = process.env.TODOS_INDEX_NAME
   ) {}
 
-  async getTodos(): Promise<TodoItem[]> {
-    const userId = "123456"
-
-    logger.info('Getting persisted todos from user', {
-      userId
-    })
+  async getTodos(userId: string): Promise<TodoItem[]> {
+    logger.info('Getting persisted todos from user', { userId })
 
     const result = await this.docClient.query({
       TableName: this.todosTable,
@@ -71,7 +67,7 @@ export class TodoRepository {
 
     const result = await this.docClient.update(params).promise()
 
-    return result.Attributes as TodoItem;
+    return result.Attributes as TodoItem
   }
 
   async deleteTodo(userId: string, todoId: string) {
