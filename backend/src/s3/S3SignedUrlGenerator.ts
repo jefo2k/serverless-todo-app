@@ -1,12 +1,14 @@
 import * as AWS  from 'aws-sdk'
+import * as AWSXRay from 'aws-xray-sdk'
 import { createLogger } from '../utils/logger'
 
+const XAWS = AWSXRay.captureAWS(AWS)
 const logger = createLogger('S3SignedUrlGenerator')
 
 export class S3SignedUrlGenerator {
 
   constructor(
-    private readonly s3: AWS.S3 = new AWS.S3({signatureVersion: 'v4'}),
+    private readonly s3: AWS.S3 = new XAWS.S3({signatureVersion: 'v4'}),
     private readonly bucketName = process.env.IMAGES_S3_BUCKET,
     private readonly urlExpiration: Number = Number(process.env.SIGNED_URL_EXPIRATION)
     ) {}
