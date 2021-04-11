@@ -1,15 +1,13 @@
 import { TodoItem } from '../models/TodoItem'
 import { TodoRepository } from '../repositories/TodoRepository'
-
 import * as uuid from 'uuid'
 import { CreateTodoRequest } from '../requests/CreateTodoRequest'
-import { UpdateTodoRequest } from '../requests/UpdateTodoRequest';
-import { getUserId } from '../lambda/utils';
+import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
 
 const todoRepository = new TodoRepository()
 
-export async function getTodos(): Promise<TodoItem[]> {
-  return await todoRepository.getTodos()
+export async function getTodos(userId: string): Promise<TodoItem[]> {
+  return await todoRepository.getTodos(userId)
 }
 
 export async function createTodo(createTodoRequest: CreateTodoRequest, userId: string): Promise<TodoItem> {
@@ -19,9 +17,10 @@ export async function createTodo(createTodoRequest: CreateTodoRequest, userId: s
     todoId,
     userId,
     name: createTodoRequest.name,
-    createdAt: new Date().toISOString(),
     dueDate: createTodoRequest.dueDate,
-    done: false
+    done: createTodoRequest.done || false,
+    createdAt: createTodoRequest.createdAt || new Date().toISOString(),
+    attachmentUrl: createTodoRequest.attachmentUrl || ''
   })
 }
 
@@ -37,4 +36,8 @@ export async function updateTodo(userId: string, todoId: string, updateTodoReque
 
 export async function deleteTodo(userId: string, todoId: string) {
   return await todoRepository.deleteTodo(userId, todoId)
+}
+
+export async function uploadTodoFile(userId: string, todoId: string, attachmentUrl: string): Promise<TodoItem> {
+  return await todoRepository.updateTodoAttachmentUrl(userId, todoId, attachmentUrl)
 }
