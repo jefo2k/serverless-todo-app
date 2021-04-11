@@ -1,10 +1,8 @@
 import { TodoItem } from '../models/TodoItem'
 import { TodoRepository } from '../repositories/TodoRepository'
-
 import * as uuid from 'uuid'
 import { CreateTodoRequest } from '../requests/CreateTodoRequest'
 import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
-// import { getUserId } from '../lambda/utils'
 
 const todoRepository = new TodoRepository()
 
@@ -38,4 +36,8 @@ export async function updateTodo(userId: string, todoId: string, updateTodoReque
 
 export async function deleteTodo(userId: string, todoId: string) {
   return await todoRepository.deleteTodo(userId, todoId)
+}
+
+export async function uploadTodoFile(userId: string, todoId: string, attachmentUrl: string): Promise<TodoItem> {
+  return await todoRepository.updateTodoAttachmentUrl(userId, todoId, attachmentUrl)
 }

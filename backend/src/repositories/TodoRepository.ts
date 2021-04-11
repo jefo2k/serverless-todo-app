@@ -66,6 +66,27 @@ export class TodoRepository {
     return result.Attributes as TodoItem
   }
 
+  async updateTodoAttachmentUrl(userId: string, todoId: string, updateTodoAttachmentUrl: string): Promise<TodoItem> {
+    logger.info('Updating todo attachmentUrl', { todoId })
+
+    const params = {
+      TableName: this.todosTable,
+      Key: {
+        userId,
+        todoId
+      },
+      ExpressionAttributeValues: {
+        ':attachmentUrl': updateTodoAttachmentUrl
+      },
+      UpdateExpression: 'SET attachmentUrl = :attachmentUrl',
+      ReturnValues: 'ALL_NEW'
+    }
+
+    const result = await this.docClient.update(params).promise()
+
+    return result.Attributes as TodoItem
+  }
+
   async deleteTodo(userId: string, todoId: string) {
     logger.info('Deteting todo', { userId, todoId })
 
