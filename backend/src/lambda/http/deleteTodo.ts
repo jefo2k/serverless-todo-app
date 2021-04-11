@@ -14,14 +14,20 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   const userId = parseUserId(jwtToken)
   const todoId = event.pathParameters.todoId
 
-  await deleteTodo(userId, todoId)
-
-  return {
-    statusCode: 204,
-    headers: {
-      'Access-Control-Allow-Origin' : '*',
-      'Access-Control-Allow-Credentials': true
-    },
-    body: ''
+  try {
+    await deleteTodo(userId, todoId)
+  
+    return {
+      statusCode: 204,
+      headers: {
+        'Access-Control-Allow-Origin' : '*',
+        'Access-Control-Allow-Credentials': true
+      },
+      body: ''
+    }
+  } catch (error) {
+    logger.error('Error removing Todo', { error })
+    throw new Error(error)
   }
+
 }
