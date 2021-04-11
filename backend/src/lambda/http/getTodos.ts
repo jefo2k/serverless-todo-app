@@ -14,15 +14,20 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   const jwtToken = parseJwtToken(authHeader)
   const userId = parseUserId(jwtToken)
 
-  const todos = await getTodos(userId)
-
-  return {
-    statusCode: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*'
-    },
-    body: JSON.stringify({
-      items: todos
-    })
+  try {
+    const todos = await getTodos(userId)
+  
+    return {
+      statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*'
+      },
+      body: JSON.stringify({
+        items: todos
+      })
+    }
+  } catch (error) {
+    logger.error('Error fetching Todos', { error })
+    throw new Error(error)
   }
 }

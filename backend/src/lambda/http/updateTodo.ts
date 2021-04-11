@@ -14,17 +14,21 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   const jwtToken = parseJwtToken(authHeader)
   const userId = parseUserId(jwtToken)
   const todoId = event.pathParameters.todoId
-
   const updatedTodo: UpdateTodoRequest = JSON.parse(event.body)
 
-  await updateTodo(userId, todoId, updatedTodo)
-
-  return {
-    statusCode: 204,
-    headers: {
-      'Access-Control-Allow-Origin' : '*',
-      'Access-Control-Allow-Credentials': true
-    },
-    body: ''
+  try {
+    await updateTodo(userId, todoId, updatedTodo)
+  
+    return {
+      statusCode: 204,
+      headers: {
+        'Access-Control-Allow-Origin' : '*',
+        'Access-Control-Allow-Credentials': true
+      },
+      body: ''
+    }
+  } catch (error) {
+    logger.error('Error updating Todo', { error })
+    throw new Error(error)
   }
 }

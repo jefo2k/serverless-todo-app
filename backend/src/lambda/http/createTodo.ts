@@ -15,16 +15,21 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   const userId = parseUserId(jwtToken)
   const newTodo: CreateTodoRequest = JSON.parse(event.body)
 
-  const newItem = await createTodo(newTodo, userId)
-
-  return {
-    statusCode: 201,
-    headers: {
-      'Access-Control-Allow-Origin' : '*',
-      'Access-Control-Allow-Credentials': true
-    },
-    body: JSON.stringify({
-      item: newItem
-    })
+  try {
+    const newItem = await createTodo(newTodo, userId)
+  
+    return {
+      statusCode: 201,
+      headers: {
+        'Access-Control-Allow-Origin' : '*',
+        'Access-Control-Allow-Credentials': true
+      },
+      body: JSON.stringify({
+        item: newItem
+      })
+    }
+  } catch (error) {
+    logger.error('Error creating Todo', { error })
+    throw new Error(error)
   }
 }

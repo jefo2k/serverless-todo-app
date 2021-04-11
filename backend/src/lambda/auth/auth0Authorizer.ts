@@ -78,13 +78,13 @@ function getToken(authHeader: string): string {
   return token
 }
 
-async function getCertificate(jwksUrl: string){
+async function getCertificate(jwksUrl: string) {
   try {
     const response = await Axios.get(jwksUrl)
     const key = response['data']['keys'][0]['x5c'][0]
     const cert = `-----BEGIN CERTIFICATE-----\n${key}\n-----END CERTIFICATE-----`
     return cert
-  } catch (error){
-    logger.error('Getting certificate failed',error)
-   }
+  } catch (error) {
+    logger.error('Getting certificate failed', error)
+  }
 }

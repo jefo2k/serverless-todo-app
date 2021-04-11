@@ -6,6 +6,7 @@ plugins:
   - serverless-iam-roles-per-function
   - serverless-dynamodb-local
   - serverless-offline
+  - serverless-aws-documentation
 
 # package:
 #   individually: true
@@ -16,6 +17,10 @@ provider:
 
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-2'}
+
+  tracing:
+    lambda: true
+    apiGateway: true
 
   environment:
     # AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
@@ -177,8 +182,32 @@ resources:
               Resource: 'arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}/*'
         Bucket: !Ref AttachmentsBucket
 
+    GatewayResponseDefault4XX:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+          gatewayresponse.header.Access-Control-Allow-Methods: "'GET,OPTIONS,POST'"
+        ResponseType: DEFAULT_4XX
+        RestApiId: !Ref ApiGatewayRestApi
+
 custom:
-  
+
+  documentation:
+    api:
+      info:
+        version: v1.0.0
+        title: Serverless todo app API
+        description: Serverless application for images sharing
+    models:
+      - name: CreateTodoRequest
+        contentType: application/json
+        schema: ${file(src/lambda/http/validators/create-todo-request.json)}
+      - name: UpdateTodoRequest
+        contentType: application/json
+        schema: ${file(src/lambda/http/validators/update-todo-request.json)}
+
   serverless-offline:
     port: 3003
   

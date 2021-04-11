@@ -18,23 +18,28 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   const userId = parseUserId(jwtToken)
   const todoId = event.pathParameters.todoId
 
-  // get the upload url directly with the s3SignedUrlGenerator
-  // the attachment upload method must not be a concern of the use cases layer
-  const attachmentId = `${todoId}|${new Date().getTime()}`
-  const attachemtUploadUrl = await s3SignedUrlGenerator.getUrl(attachmentId)
-
-  // define atachment url and update the Todo via use case layer
-  const attachmentUrl = `https://${bucketName}.s3.amazonaws.com/${attachmentId}`
-  await uploadTodoFile(userId, todoId, attachmentUrl)
-
-  return {
-    statusCode: 201,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Credentials': true
-    },
-    body: JSON.stringify({
-      uploadUrl: attachemtUploadUrl
-    })
+  try {
+    // get the upload url directly with the s3SignedUrlGenerator
+    // the attachment upload method must not be a concern of the use cases layer
+    const attachmentId = `${todoId}|${new Date().getTime()}`
+    const attachemtUploadUrl = await s3SignedUrlGenerator.getUrl(attachmentId)
+  
+    // define atachment url and update the Todo via use case layer
+    const attachmentUrl = `https://${bucketName}.s3.amazonaws.com/${attachmentId}`
+    await uploadTodoFile(userId, todoId, attachmentUrl)
+  
+    return {
+      statusCode: 201,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true
+      },
+      body: JSON.stringify({
+        uploadUrl: attachemtUploadUrl
+      })
+    }
+  } catch (error) {
+    logger.error('Error in upload', { error })
+    throw new Error(error)
   }
 }
